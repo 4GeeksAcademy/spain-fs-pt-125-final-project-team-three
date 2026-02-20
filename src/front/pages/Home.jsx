@@ -1,52 +1,71 @@
-import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
+import React, { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { useNavigate } from "react-router-dom";
+import "../index.css"; 
 
 export const Home = () => {
+    const { store, dispatch } = useGlobalReducer();
+    const navigate = useNavigate();
 
-	const { store, dispatch } = useGlobalReducer()
+    const [filtros, setFiltros] = useState({
+        halal: false,
+        vegano: false,
+        celiaco: false
+    });
 
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL
+    const handleSearch = () => {
+        dispatch({
+            type: "set_filters",
+            payload: filtros
+        });
+        navigate("/restaurantes");
+    };
 
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+    return (
+        <div className="home-container">
+            <h1 className="hambrientos-title">HAMBRIENTOS</h1>
 
-			const response = await fetch(backendUrl + "/api/hello")
-			const data = await response.json()
+            <div className="search-card shadow">
+                <h2 className="search-title">¿Qué te apetece hoy?</h2>
+                
+                <div className="options-container">
+                    <label className="option-label">
+                        <input 
+                            type="checkbox" 
+                            checked={filtros.halal}
+                            onChange={() => setFiltros({...filtros, halal: !filtros.halal})} 
+                        />
+                        <span>Halal</span>
+                    </label>
+                    <label className="option-label">
+                        <input 
+                            type="checkbox" 
+                            checked={filtros.vegano}
+                            onChange={() => setFiltros({...filtros, vegano: !filtros.vegano})} 
+                        />
+                        <span>Vegano</span>
+                    </label>
+                    <label className="option-label">
+                        <input 
+                            type="checkbox" 
+                            checked={filtros.celiaco}
+                            onChange={() => setFiltros({...filtros, celiaco: !filtros.celiaco})} 
+                        />
+                        <span>Celíacos</span>
+                    </label>
+                </div>
 
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
+                <div className="location-section">
+                    <div className="fake-input">
+                        Ubicación actual... <span>5 Km</span>
+                    </div>
+                    <small>📍 Ubicación detectada por GPS</small>
+                </div>
 
-			return data
-
-		} catch (error) {
-			if (error.message) throw new Error(
-				`Could not fetch the message from the backend.
-				Please check if the backend is running and the backend port is public.`
-			);
-		}
-
-	}
-
-	useEffect(() => {
-		loadMessage()
-	}, [])
-
-	return (
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
-			</div>
-		</div>
-	);
-}; 
+                <button className="search-button" onClick={handleSearch}>
+                    EMPEZAR A BUSCAR
+                </button>
+            </div>
+        </div>
+    );
+};
