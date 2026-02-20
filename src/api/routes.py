@@ -43,3 +43,12 @@ def login():
     access_token=create_access_token(identity=user.id)
 
     return jsonify({"token": access_token}), 201
+
+@api.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    user_id = get_jwt_identity()
+    user = db.session.execute(select(User).where(
+        User.id == user_id)).scalar_one_or_none()
+
+    return jsonify({"user": user}), 200
