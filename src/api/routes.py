@@ -6,7 +6,7 @@ from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 api = Blueprint('api', __name__)
 
@@ -35,12 +35,12 @@ def register ():
 
 @api.route('/login', methods=['POST'])
 def login():
-    email = request,json.get('email')
+    email = request.json.get('email')
     password = request.json.get('password')
     user = db.session.execute(select(User).where(
         User.email == email)).scalar_one_or_none()
 
-    access_token=create_access_token(identity=user.id)
+    access_token=create_access_token(identity=user.email)
 
     return jsonify({"token": access_token}), 201
 
