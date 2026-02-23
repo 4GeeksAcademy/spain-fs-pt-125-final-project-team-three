@@ -3,6 +3,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
 import "../index.css"; 
 
+
 export const Home = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
@@ -29,37 +30,23 @@ export const Home = () => {
                 <h2 className="search-title">¿Qué te apetece hoy?</h2>
                 
                 <div className="options-container">
-                    <label className="option-label">
-                        <input 
-                            type="checkbox" 
-                            checked={filtros.halal}
-                            onChange={() => setFiltros({...filtros, halal: !filtros.halal})} 
-                        />
-                        <span>Halal</span>
-                    </label>
-                    <label className="option-label">
-                        <input 
-                            type="checkbox" 
-                            checked={filtros.vegano}
-                            onChange={() => setFiltros({...filtros, vegano: !filtros.vegano})} 
-                        />
-                        <span>Vegano</span>
-                    </label>
-                    <label className="option-label">
-                        <input 
-                            type="checkbox" 
-                            checked={filtros.celiaco}
-                            onChange={() => setFiltros({...filtros, celiaco: !filtros.celiaco})} 
-                        />
-                        <span>Celíacos</span>
-                    </label>
+                    {["halal", "vegano", "celiaco"].map((item) => (
+                        <label className="option-label" key={item}>
+                            <input 
+                                type="checkbox" 
+                                checked={filtros[item]}
+                                onChange={() => setFiltros({...filtros, [item]: !filtros[item]})} 
+                            />
+                            <span className="text-capitalize">{item === "celiaco" ? "Celíacos" : item}</span>
+                        </label>
+                    ))}
                 </div>
 
                 <div className="location-section">
                     <div className="fake-input">
                         Ubicación actual... <span>5 Km</span>
                     </div>
-                    <small>📍 Ubicación detectada por GPS</small>
+                    <small>  Ubicación detectada por GPS</small>
                 </div>
 
                 <button className="search-button" onClick={handleSearch}>
@@ -69,3 +56,5 @@ export const Home = () => {
         </div>
     );
 };
+
+export default Home;
