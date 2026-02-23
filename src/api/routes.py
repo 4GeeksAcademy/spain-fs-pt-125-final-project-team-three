@@ -47,8 +47,11 @@ def login():
 @api.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
-    user_id = get_jwt_identity()
+    email = get_jwt_identity()
     user = db.session.execute(select(User).where(
-        User.id == user_id)).scalar_one_or_none()
+        User.email == email)).scalar_one_or_none()
+    
+    final_user = user.serialize()
 
-    return jsonify({"user": user}), 200
+
+    return jsonify({"user": final_user}), 200
