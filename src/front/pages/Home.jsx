@@ -1,24 +1,20 @@
 import React, { useState } from "react";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
-import "../index.css"; 
-
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import MyMap from "../components/MyMap.jsx";
+import "../index.css";
 
 export const Home = () => {
-    const { store, dispatch } = useGlobalReducer();
+    const { dispatch } = useGlobalReducer();
     const navigate = useNavigate();
-
-    const [filtros, setFiltros] = useState({
-        halal: false,
-        vegano: false,
-        celiaco: false
-    });
+    const [radius, setRadius] = useState(5000);
 
     const handleSearch = () => {
         dispatch({
-            type: "set_filters",
-            payload: filtros
+            type: "set_radius",
+            payload: radius
         });
+
         navigate("/restaurantes");
     };
 
@@ -27,26 +23,24 @@ export const Home = () => {
             <h1 className="hambrientos-title">HAMBRIENTOS</h1>
 
             <div className="search-card shadow">
-                <h2 className="search-title">¿Qué te apetece hoy?</h2>
-                
-                <div className="options-container">
-                    {["halal", "vegano", "celiaco"].map((item) => (
-                        <label className="option-label" key={item}>
-                            <input 
-                                type="checkbox" 
-                                checked={filtros[item]}
-                                onChange={() => setFiltros({...filtros, [item]: !filtros[item]})} 
-                            />
-                            <span className="text-capitalize">{item === "celiaco" ? "Celíacos" : item}</span>
-                        </label>
-                    ))}
-                </div>
-
                 <div className="location-section">
-                    <div className="fake-input">
-                        Ubicación actual... <span>5 Km</span>
+                    <MyMap />
+
+                    <div className="radius-section">
+                        <label>Distancia:</label>
+                        <select
+                            value={radius}
+                            onChange={(e) => setRadius(Number(e.target.value))}
+                            className="form-select"
+                        >
+                            <option value={1000}>1 km</option>
+                            <option value={3000}>3 km</option>
+                            <option value={5000}>5 km</option>
+                            <option value={10000}>10 km</option>
+                        </select>
                     </div>
-                    <small>  Ubicación detectada por GPS</small>
+
+                    <small>Ubicación detectada por GPS</small>
                 </div>
 
                 <button className="search-button" onClick={handleSearch}>

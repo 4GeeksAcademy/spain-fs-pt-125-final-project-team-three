@@ -9,15 +9,18 @@ export const initialStore = () => {
   }
 }
 
-export default function storeReducer(store, action = {}) {
-  switch (action.type) {
-    case 'set_filters':
-      return {
-        ...store,
-        filtros: action.payload
-      };
+export const storeReducer = (state, action) => {
+    switch (action.type) {
 
-    default:
-      throw Error('Unknown action.');
-  }
-}
+        case "set_radius":
+            return {
+                ...state,
+                radius: action.payload
+            };
+
+        default:
+            throw new Error("Unknown action.");
+    }
+};
+
+export default storeReducer
