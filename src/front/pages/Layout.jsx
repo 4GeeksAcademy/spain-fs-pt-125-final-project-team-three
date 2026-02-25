@@ -1,22 +1,26 @@
-import { Outlet } from "react-router-dom/dist"
-import ScrollToTop from "../components/ScrollToTop"
-import { Navbar } from "../components/Navbar"
-import { Footer } from "../components/Footer"
-import MyMap from "../components/MyMap"
-import RestaurantsNearby from "../components/RestaurantsNearby"
-import {Home} from "./Home"
-import {Restaurantes} from "./restaurantes"
-// Base component that maintains the navbar and footer throughout the page and the scroll to top functionality.
-export const Layout = () => {
-  return (
-    <div>
-      <Home />
-      <Restaurantes />
-      <h1>Mapa</h1>
-      <MyMap />
-      <h1>Restaurantes cercanos</h1>
-      <RestaurantsNearby />
-    </div>
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-  )
-}
+import { Home } from "./Home.jsx";
+import { Restaurantes } from "./restaurantes.jsx";
+import { Navbar } from "../components/Navbar.jsx";
+import { Footer } from "../components/Footer.jsx";
+import ScrollToTop from "../components/ScrollToTop.jsx";
+
+export const Layout = () => {
+    return (
+        <BrowserRouter>
+            <ScrollToTop>
+                <Navbar /> 
+                <Routes>
+                    <Route element={<Home />} path="/" />
+                    <Route element={<Restaurantes />} path="/restaurantes" />
+                    <Route element={<h1>Página no encontrada</h1>} path="*" />
+                </Routes>
+                <Footer />
+            </ScrollToTop>
+        </BrowserRouter>
+    );
+};
+
+export default Layout;
