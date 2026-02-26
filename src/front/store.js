@@ -14,7 +14,7 @@ export const storeReducer = (state, action) => {
       };
 
     default:
-      return state; // ⚠️ IMPORTANTE: no lances error
+      return state;
   }
 };
 
