@@ -5,31 +5,34 @@ export const initialStore = () => {
       vegano: false,
       celiaco: false
     },
-    misFavoritos: [] 
-  }
-}
+    misFavoritos: [],
+    radius: 5000
+  };
+};
 
-export default function storeReducer(store, action = {}) {
+export const storeReducer = (state, action) => {
   switch (action.type) {
-    case 'set_filters':
+    case "set_radius":
       return {
-        ...store,
-        filtros: action.payload
+        ...state,
+        radius: action.payload
       };
 
     case 'agregar_favorito':
       return {
-        ...store,
-        misFavoritos: [...store.misFavoritos, action.payload]
+        ...state,
+        misFavoritos: [...state.misFavoritos, action.payload]
       };
 
     case 'borrar_favorito':
       return {
-        ...store,
-        misFavoritos: store.misFavoritos.filter(item => item.nombre !== action.payload)
+        ...state,
+        misFavoritos: state.misFavoritos.filter(item => item.nombre !== action.payload)
       };
 
     default:
-      return store;
+      return state;
   }
-}
+};
+
+export default storeReducer;
