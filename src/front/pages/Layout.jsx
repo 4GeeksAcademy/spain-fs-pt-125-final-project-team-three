@@ -4,6 +4,7 @@ import { Home } from "./Home.jsx";
 import { Restaurantes } from "./restaurantes.jsx";
 import { Favoritos } from "./Favoritos.jsx";
 import { Visitados } from "./Visitados.jsx"; 
+import { Perfil } from "./Perfil.jsx";
 import { Navbar } from "../components/Navbar.jsx";
 import { Footer } from "../components/Footer.jsx";
 
@@ -16,6 +17,7 @@ export const Layout = () => {
                 <Route element={<Restaurantes />} path="/restaurantes" />
                 <Route element={<Favoritos />} path="/favoritos" />
                 <Route element={<Visitados />} path="/visitados" />
+                <Route element={<Perfil />} path="/perfil" />
                 <Route element={<h1>No encontrado</h1>} path="*" />
             </Routes>
             <Footer />
