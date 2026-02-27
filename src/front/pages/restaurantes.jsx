@@ -14,31 +14,41 @@ export const Restaurantes = () => {
     const [visitedIds, setVisitedIds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
-        setBlockedIds([]);
-        setVisitedIds([]);
         getRestaurants();
-        const timeout = setTimeout(() => {
-            getRestaurants();
-        }, 2000);
-        return () => clearTimeout(timeout);
     }, [radius]);
 
     async function getRestaurants() {
+
+        if (isFetching) return;
+
+        setIsFetching(true);
         setLoading(true);
         setError(null);
+
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                const query = `[out:json][timeout:25];node["amenity"="restaurant"](around:${radius},${lat},${lon});out;`;
+
+                const query = `[out:json][timeout:25];
+                node["amenity"="restaurant"](around:${radius},${lat},${lon});
+                out;
+                `;
                 try {
                     const response = await fetch("https://overpass-api.de/api/interpreter", {
                         method: "POST",
                         body: query
                     });
-                    if (response.status === 429) throw new Error("Demasiadas solicitudes.");
+                    if (response.status === 429) {
+                        throw new Error("Demasiadas solicitudes.");
+
+                    }
+                    if (!response.ok){
+                        throw new error("Error del servidor.");
+                    }
                     const data = await response.json();
                     const valid = data.elements.filter((r) => r.tags?.name && r.tags.name.trim() !== "");
                     setRestaurants(valid);
@@ -51,11 +61,13 @@ export const Restaurantes = () => {
                     setError("Error cargando restaurantes.");
                 } finally {
                     setLoading(false);
+                    setIsFetching(false);
                 }
             },
             () => {
                 setError("No se pudo obtener tu ubicación.");
                 setLoading(false);
+                setIsFetching(false);
             }
         );
     }
