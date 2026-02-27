@@ -1,23 +1,21 @@
 export const initialStore = () => {
   return {
-    // Solo dejamos lo que TU proyecto usa
-    filtros: {
-      halal: false,
-      vegano: false,
-      celiaco: false
-    }
-  }
-}
+    radius: 5000
+  };
+};
 
-export default function storeReducer(store, action = {}) {
+export const storeReducer = (state, action) => {
   switch (action.type) {
-    case 'set_filters':
+
+    case "set_radius":
       return {
-        ...store,
-        filtros: action.payload
+        ...state,
+        radius: action.payload
       };
 
     default:
-      throw Error('Unknown action.');
+      return state;
   }
-}
+};
+
+export default storeReducer;
