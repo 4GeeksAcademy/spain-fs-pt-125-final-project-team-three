@@ -1,21 +1,38 @@
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { useNavigate } from "react-router-dom";
 
 export const Favoritos = () => {
-    const { store } = useGlobalReducer();
+    const { store, dispatch } = useGlobalReducer();
+    const navigate = useNavigate();
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Mis Favoritos ⭐</h1>
+        <div className="container mt-5">
+            <h1 className="mb-4 text-center">Mis Favoritos ⭐</h1>
             {store.misFavoritos.length === 0 ? (
-                <p>Deberias salir a comer mas amenudo (;.</p>
+                <div className="text-center alert alert-light">
+                    <p>Deberías salir a comer más a menudo (;.</p>
+                    <button className="btn btn-danger" onClick={() => navigate("/restaurantes")}>Explorar locales</button>
+                </div>
             ) : (
-                store.misFavoritos.map((res, index) => (
-                    <div key={index} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
-                        <h3>{res.nombre}</h3>
-                        <p>{res.tipo} - {res.precio}</p>
-                    </div>
-                ))
+                <div className="row">
+                    {store.misFavoritos.map((res, index) => (
+                        <div key={index} className="col-md-4 mb-3">
+                            <div className="card shadow-sm border-warning">
+                                <div className="card-body">
+                                    <h5 className="card-title">{res.nombre}</h5>
+                                    <p className="card-text text-muted small">{res.tipo}</p>
+                                    <button 
+                                        className="btn btn-outline-danger btn-sm w-100"
+                                        onClick={() => dispatch({ type: 'borrar_favorito', payload: res.nombre })}
+                                    >
+                                        Quitar de favoritos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             )}
         </div>
     );
