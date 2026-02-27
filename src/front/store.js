@@ -1,11 +1,11 @@
 export const initialStore = () => {
   return {
-    // Solo dejamos lo que TU proyecto usa
     filtros: {
       halal: false,
       vegano: false,
       celiaco: false
-    }
+    },
+    misFavoritos: [] 
   }
 }
 
@@ -17,7 +17,19 @@ export default function storeReducer(store, action = {}) {
         filtros: action.payload
       };
 
+    case 'agregar_favorito':
+      return {
+        ...store,
+        misFavoritos: [...store.misFavoritos, action.payload]
+      };
+
+    case 'borrar_favorito':
+      return {
+        ...store,
+        misFavoritos: store.misFavoritos.filter(item => item.nombre !== action.payload)
+      };
+
     default:
-      throw Error('Unknown action.');
+      return store;
   }
 }
