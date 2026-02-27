@@ -26,7 +26,7 @@ export const Navbar = () => {
                             {store.misFavoritos.length === 0 ? (
                                 <li><span className="dropdown-item text-muted small">Vacio</span></li>
                             ) : (
-                                store.misFavoritos.map((fav, i) => (
+                                store.misFavoritos.slice(0, 3).map((fav, i) => (
                                     <li key={i} className="d-flex justify-content-between align-items-center px-3 py-1">
                                         <span className="small text-truncate" style={{ maxWidth: "180px" }}>{fav.nombre}</span>
                                         <button 
@@ -45,7 +45,7 @@ export const Navbar = () => {
                             {store.yaVisitados.length === 0 ? (
                                 <li><span className="dropdown-item text-muted small">No has ido a ninguno</span></li>
                             ) : (
-                                store.yaVisitados.map((vis, i) => {
+                                store.yaVisitados.slice(0, 3).map((vis, i) => {
                                     const esFav = store.misFavoritos.some(f => f.nombre === vis.nombre);
                                     return (
                                         <li key={i} className="d-flex justify-content-between align-items-center px-3 py-1">
