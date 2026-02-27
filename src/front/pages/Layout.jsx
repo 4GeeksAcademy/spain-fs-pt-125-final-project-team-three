@@ -13,7 +13,6 @@ export const Layout = () => {
             <Routes>
                 <Route element={<Home />} path="/" />
                 <Route element={<Restaurantes />} path="/restaurantes" />
-                {/* Borramos la línea de detalle para que funcione */}
                 <Route element={<Favoritos />} path="/favoritos" />
                 <Route element={<h1>No encontrado</h1>} path="*" />
             </Routes>
