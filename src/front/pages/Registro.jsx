@@ -1,7 +1,4 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
 
 export const Register = () => {
     const [email, setEmail] = useState("");
@@ -31,7 +28,6 @@ export const Register = () => {
 
     return (
         <div className="home-container">
-            <Navbar />
             <div className="text-center mt-5">
                 <h2>Crea tu cuenta</h2>
                 <div className="container-fluid w-25">
