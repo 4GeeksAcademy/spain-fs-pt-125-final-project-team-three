@@ -24,7 +24,7 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
-@api.route('register', methods=['POST'])
+@api.route('/register', methods=['POST'])
 def register ():
     email= request.json.get('email')
     password=  request.json.get('password')

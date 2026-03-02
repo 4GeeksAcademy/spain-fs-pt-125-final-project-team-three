@@ -8,7 +8,7 @@ export const Login = () => {
 	const [password, setPassword] = useState("");
 
     const login = async () => {
-			const response = await fetch("https://vigilant-pancake-97xx5547rv4xc7jrp-3001.app.github.dev/", {
+			const response = await fetch("https://vigilant-pancake-97xx5547rv4xc7jrp-3001.app.github.dev/api/login", {
 				method: "POST",
 				body: JSON.stringify({ email, password }),
 				headers: {
