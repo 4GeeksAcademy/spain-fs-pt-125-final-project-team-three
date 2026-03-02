@@ -6,6 +6,20 @@ export const Visitados = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/visitados", {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                dispatch({ type: "set_visitados", payload: data });
+            });
+    }, []);
+
     const handleFavorito = (item) => {
         dispatch({
             type: "agregar_favorito",
@@ -42,9 +56,9 @@ export const Visitados = () => {
                                             <span className="badge bg-success">Visitado ✅</span>
                                         </div>
                                         <p className="card-text text-muted">{item.tipo}</p>
-                                        
+
                                         <div className="d-flex justify-content-between align-items-center mt-3">
-                                            <button 
+                                            <button
                                                 className={`btn btn-sm ${esFavorito ? "btn-warning" : "btn-outline-warning"}`}
                                                 onClick={() => handleFavorito(item)}
                                                 disabled={esFavorito}
@@ -52,7 +66,7 @@ export const Visitados = () => {
                                                 {esFavorito ? "⭐ En favoritos" : "⭐ Guardar"}
                                             </button>
 
-                                            <button 
+                                            <button
                                                 className="btn btn-sm btn-link text-danger text-decoration-none"
                                                 onClick={() => dispatch({ type: "borrar_visitado", payload: item.nombre })}
                                             >

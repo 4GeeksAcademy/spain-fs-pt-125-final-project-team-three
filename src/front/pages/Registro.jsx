@@ -5,7 +5,7 @@ export const Register = () => {
     const [password, setPassword] = useState("");
 
     const register = async () => {
-            const response = await fetch("https://vigilant-pancake-97xx5547rv4xc7jrp-3001.app.github.dev/api/register", {
+            const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/register", {
                 method: "POST",
                 body: JSON.stringify({ 
                 email: email, 
@@ -30,7 +30,7 @@ export const Register = () => {
         <div className="home-container">
             <div className="text-center mt-5">
                 <h2>Crea tu cuenta</h2>
-                <div className="container-fluid w-25">
+                <div className="container-fluid">
                     <div className="mb-3">
                         <label htmlFor="FormControlInput1" className="form-label">Dirección email</label>
                         <input 

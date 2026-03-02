@@ -98,17 +98,28 @@ export const Restaurantes = () => {
 
     function handleVisited() {
         if (!randomRestaurant) return;
+
+        const token = localStorage.getItem("token");
+
+        fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/visitados", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                nombre: randomRestaurant.tags.name,
+                tipo: randomRestaurant.tags.cuisine || "Restaurante"
+            })
+        });
+
         dispatch({
             type: "agregar_visitado",
             payload: {
                 nombre: randomRestaurant.tags.name,
-                tipo: randomRestaurant.tags.cuisine || "Restaurante",
-                id: randomRestaurant.id
+                tipo: randomRestaurant.tags.cuisine || "Restaurante"
             }
         });
-        const updated = [...visitedIds, randomRestaurant.id];
-        setVisitedIds(updated);
-        pickRandom(restaurants, updated, blockedIds);
     }
 
     if (loading) return <div className="container mt-5 text-center"><h2>Buscando el mejor sitio...</h2></div>;
@@ -160,5 +171,3 @@ export const Restaurantes = () => {
 };
 
 export default Restaurantes;
-
-//prueba
