@@ -1,7 +1,4 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
 
 export const Login = () => {
     const [email, setEmail] = useState("");
@@ -22,7 +19,6 @@ export const Login = () => {
 	return (
         
         <div className="home-container">
-            <Navbar />
             	<div className="text-center mt-5">
 			<div className="container-fluid w-25">
 
