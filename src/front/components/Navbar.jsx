@@ -80,8 +80,12 @@ export const Navbar = () => {
                             <li><Link className="dropdown-item text-center text-primary small fw-bold" to="/perfil">MI PERFIL</Link></li>
                         </ul>
                     </div>
-
-                    <Link to="/login" className="btn btn-outline-primary">Login</Link>
+                    <Link to="/Login">
+						<button className="btn btn-success">Login</button>
+					</Link>
+                    <Link to="/Registro">
+						<button className="btn btn-success">Registro</button>
+					</Link>
                 </div>
             </div>
         </nav>

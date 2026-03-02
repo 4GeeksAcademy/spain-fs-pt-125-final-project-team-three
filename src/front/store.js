@@ -11,6 +11,9 @@ export const initialStore = () => {
 
 export default function storeReducer(store, action = {}) {
   switch (action.type) {
+    case 'set_filters':
+      return { ...store, filtros: action.payload };
+
     case 'set_radius':
       return { ...store, radius: action.payload };
 

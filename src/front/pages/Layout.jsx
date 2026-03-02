@@ -9,6 +9,9 @@ import { Guardados } from "./Guardados.jsx";
 import { Perfil } from "./Perfil.jsx";
 import { Navbar } from "../components/Navbar.jsx";
 import { Footer } from "../components/Footer.jsx";
+import { Login } from "./Login.jsx"; 
+import { Register } from "./Registro.jsx"; 
+
 
 export const Layout = () => {
     return (
@@ -22,6 +25,8 @@ export const Layout = () => {
                 <Route element={<Descartados />} path="/descartados" />
                 <Route element={<Guardados />} path="/guardados" />
                 <Route element={<Perfil />} path="/perfil" />
+                <Route path="/Login" element={<Login />} />
+                <Route path="/Registro" element={<Register/>} />
                 <Route element={<h1>No encontrado</h1>} path="*" />
             </Routes>
             <Footer />
