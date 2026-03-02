@@ -41,6 +41,28 @@ export const Perfil = () => {
                             </div>
                         </div>
                     </div>
+
+                    <div className="row g-4 mb-4">
+                        <div className="col-md-6">
+                            <div className="card h-100 shadow-sm border-0 text-center p-4" 
+                                 onClick={() => navigate("/guardados")} 
+                                 style={{ cursor: "pointer", transition: "0.3s" }}>
+                                <h1 className="display-4 fw-bold text-info">{store.guardados.length}</h1>
+                                <h5 className="text-uppercase fw-bold small text-muted">Guardados</h5>
+                                <button className="btn btn-sm btn-outline-info mt-2">Ver todos</button>
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <div className="card h-100 shadow-sm border-0 text-center p-4" 
+                                 onClick={() => navigate("/descartados")} 
+                                 style={{ cursor: "pointer", transition: "0.3s" }}>
+                                <h1 className="display-4 fw-bold text-danger">{store.descartados.length}</h1>
+                                <h5 className="text-uppercase fw-bold small text-muted">Descartados</h5>
+                                <button className="btn btn-sm btn-outline-danger mt-2">Ver todos</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
