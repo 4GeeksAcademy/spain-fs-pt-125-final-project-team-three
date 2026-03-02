@@ -17,7 +17,12 @@ export const Restaurantes = () => {
     const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
-        getRestaurants();
+        const delay = setTimeout(() => {
+            if (!isFetching) {
+                getRestaurants();
+            }
+        }, 1500);
+        return () => clearTimeout(delay)
     }, [radius]);
 
     async function getRestaurants() {
@@ -46,8 +51,8 @@ export const Restaurantes = () => {
                         throw new Error("Demasiadas solicitudes.");
 
                     }
-                    if (!response.ok){
-                        throw new error("Error del servidor.");
+                    if (!response.ok) {
+                        throw new Error("Error del servidor.");
                     }
                     const data = await response.json();
                     const valid = data.elements.filter((r) => r.tags?.name && r.tags.name.trim() !== "");
@@ -61,7 +66,9 @@ export const Restaurantes = () => {
                     setError("Error cargando restaurantes.");
                 } finally {
                     setLoading(false);
-                    setIsFetching(false);
+                    setTimeout(() => {
+                        setIsFetching(false);
+                    }, 2000);
                 }
             },
             () => {
@@ -124,6 +131,14 @@ export const Restaurantes = () => {
                         <button className="btn btn-danger btn-lg px-4" onClick={handleBlock}>NO VOLVER A RECOMENDAR</button>
                         <button className="btn btn-outline-secondary btn-lg px-4 bg-white" onClick={() => pickRandom(restaurants)}>MUESTRÁME OTRO</button>
                         <button className="btn btn-success btn-lg px-5 fw-bold" onClick={handleVisited}>GUARDAR</button>
+                        <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${randomRestaurant.lat},${randomRestaurant.lon}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-primary btn-lg px-4"
+                        >
+                            VER EN GOOGLE MAPS
+                        </a>
                     </div>
                     <div className="mx-auto" style={{ maxWidth: "320px" }}>
                         <label className="form-label fw-bold text-muted small">Cambiar distancia:</label>
