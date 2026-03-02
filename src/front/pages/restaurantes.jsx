@@ -1,60 +1,3 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../index.css"; 
-
-export const Restaurantes = () => {
-    const navigate = useNavigate();
-
-
-    const listaRestaurantes = [
-        { nombre: "Tacos El Pastor", precio: "$$", tipo: "Mexicano", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500" },
-        { nombre: "Veggie Heaven", precio: "$", tipo: "Vegano", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500" },
-        { nombre: "Pizzería Bella", precio: "$$$", tipo: "Italiano", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" }
-    ];
-
-    const [indice, setIndice] = useState(0);
-
-    const handleNext = () => {
-        if (indice < listaRestaurantes.length - 1) {
-            setIndice(indice + 1);
-        } else {
-            alert("No hay más restaurantes cerca");
-            navigate("/");
-        }
-    };
-
-    const restauranteActual = listaRestaurantes[indice];
-
-    return (
-        <div className="home-container">
-            <div className="restaurante-card shadow">
-                <div className="restaurante-header mb-3">
-                    <h2 className="fw-bold">{restauranteActual.nombre}</h2>
-                </div>
-
-                <div className="row">
-                    <div className="col-md-7">
-                        <div className="img-box">
-                            <img src={restauranteActual.img} className="img-fluid rounded" alt="restaurante" />
-                        </div>
-                    </div>
-                    <div className="col-md-5">
-                        <div className="info-box mb-3">
-                            <small className="text-muted">Rango de precios</small>
-                            <p className="fw-bold fs-4">{restauranteActual.precio}</p>
-                        </div>
-                        <div className="action-buttons">
-                            <button className="btn-rechazar" onClick={handleNext}>❌</button>
-                            <button className="btn-aceptar" onClick={handleNext}>✅</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default Restaurantes;    
 import React, { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +14,6 @@ export const Restaurantes = () => {
     const [visitedIds, setVisitedIds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -80,30 +22,29 @@ export const Restaurantes = () => {
             }
         }, 1500);
         return () => clearTimeout(delay)
+        setBlockedIds([]);
+        setVisitedIds([]);
+        getRestaurants();
+        const timeout = setTimeout(() => {
+            getRestaurants();
+        }, 2000);
+        return () => clearTimeout(timeout);
     }, [radius]);
 
     async function getRestaurants() {
-
-        if (isFetching) return;
-
-        setIsFetching(true);
         setLoading(true);
         setError(null);
-
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-
-                const query = `[out:json][timeout:25];
-                node["amenity"="restaurant"](around:${radius},${lat},${lon});
-                out;
-                `;
+                const query = `[out:json][timeout:25];node["amenity"="restaurant"](around:${radius},${lat},${lon});out;`;
                 try {
                     const response = await fetch("https://overpass-api.de/api/interpreter", {
                         method: "POST",
                         body: query
                     });
+<<<<<<< HEAD
                     if (response.status === 429) {
                         throw new Error("Demasiadas solicitudes.");
 
@@ -111,6 +52,9 @@ export const Restaurantes = () => {
                     if (!response.ok) {
                         throw new Error("Error del servidor.");
                     }
+=======
+                    if (response.status === 429) throw new Error("Demasiadas solicitudes.");
+>>>>>>> 29af3f9 (version casi1.0)
                     const data = await response.json();
                     const valid = data.elements.filter((r) => r.tags?.name && r.tags.name.trim() !== "");
                     setRestaurants(valid);
@@ -123,15 +67,17 @@ export const Restaurantes = () => {
                     setError("Error cargando restaurantes.");
                 } finally {
                     setLoading(false);
+<<<<<<< HEAD
                     setTimeout(() => {
                         setIsFetching(false);
                     }, 2000);
+=======
+>>>>>>> 29af3f9 (version casi1.0)
                 }
             },
             () => {
                 setError("No se pudo obtener tu ubicación.");
                 setLoading(false);
-                setIsFetching(false);
             }
         );
     }
