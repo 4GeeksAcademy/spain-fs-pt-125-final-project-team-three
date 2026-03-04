@@ -17,11 +17,9 @@ export const Restaurantes = () => {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            if (!isFetching) {
-                getRestaurants();
-            }
+            if (!isFetching) getRestaurants();
         }, 1500);
-        return () => clearTimeout(delay)
+        return () => clearTimeout(delay);
     }, [radius]);
 
     async function getRestaurants() {
@@ -34,11 +32,8 @@ export const Restaurantes = () => {
             async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
+                const query = `[out:json][timeout:25];node["amenity"="restaurant"](around:${radius},${lat},${lon});out;`;
 
-                const query = `[out:json][timeout:25];
-                node["amenity"="restaurant"](around:${radius},${lat},${lon});
-                out;
-                `;
                 try {
                     const response = await fetch("https://overpass-api.de/api/interpreter", {
                         method: "POST",
@@ -47,11 +42,8 @@ export const Restaurantes = () => {
                     const data = await response.json();
                     const valid = data.elements.filter((r) => r.tags?.name && r.tags.name.trim() !== "");
                     setRestaurants(valid);
-                    if (valid.length > 0) {
-                        pickRandom(valid, []);
-                    } else {
-                        setRandomRestaurant(null);
-                    }
+                    if (valid.length > 0) pickRandom(valid, []);
+                    else setRandomRestaurant(null);
                 } catch (err) {
                     setError("Error cargando restaurantes.");
                 } finally {
@@ -78,36 +70,28 @@ export const Restaurantes = () => {
     }
 
     async function handleBlock() {
-    if (!randomRestaurant) return;
-    const token = localStorage.getItem("token");
+        if (!randomRestaurant) return;
+        const token = localStorage.getItem("token");
 
-    if (token) {
-        try {
-            const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/descartado", {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "Authorization": "Bearer " + token 
-                },
-                body: JSON.stringify({
-                    nombre: randomRestaurant.tags.name,
-                    tipo: randomRestaurant.tags.cuisine || "Restaurante"
-                })
-            });
+        if (token) {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/descartado`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                    body: JSON.stringify({ nombre: randomRestaurant.tags.name, tipo: randomRestaurant.tags.cuisine || "Restaurante" })
+                });
 
-            if (response.ok) {
-                const data = await response.json();
-                dispatch({ type: "agregar_descartado", payload: data });
-            }
-        } catch (error) {
-            console.error("Error al descartar:", error);
+                if (response.ok) {
+                    const data = await response.json();
+                    dispatch({ type: "agregar_descartado", payload: data });
+                }
+            } catch (error) { console.error(error); }
         }
-    }
 
-    const updated = [...blockedIds, randomRestaurant.id];
-    setBlockedIds(updated);
-    pickRandom(restaurants, updated);
-}
+        const updated = [...blockedIds, randomRestaurant.id];
+        setBlockedIds(updated);
+        pickRandom(restaurants, updated);
+    }
 
     async function handleGuardar() {
         if (!randomRestaurant) return;
@@ -119,30 +103,24 @@ export const Restaurantes = () => {
         }
 
         try {
-            const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/guardado", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/guardado`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-                body: JSON.stringify({
-                    nombre: randomRestaurant.tags.name,
-                    tipo: randomRestaurant.tags.cuisine || "Restaurante"
-                })
+                body: JSON.stringify({ nombre: randomRestaurant.tags.name, tipo: randomRestaurant.tags.cuisine || "Restaurante" })
             });
 
             if (response.ok) {
                 const data = await response.json();
                 dispatch({ type: "agregar_guardado", payload: data });
-                
                 const updated = [...blockedIds, randomRestaurant.id];
                 setBlockedIds(updated);
                 pickRandom(restaurants, updated);
             }
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        } catch (error) { console.error(error); }
     }
 
     if (loading) return <div className="container mt-5 text-center"><h2>Buscando el mejor sitio...</h2></div>;
-    
+
     if (error || !randomRestaurant) return (
         <div className="container mt-5 text-center">
             <h2>{error || "No hay más restaurantes disponibles ;("}</h2>
@@ -162,20 +140,18 @@ export const Restaurantes = () => {
                         <button className="btn btn-danger btn-lg px-4" onClick={handleBlock}>NO VOLVER A RECOMENDAR</button>
                         <button className="btn btn-outline-secondary btn-lg px-4 bg-white" onClick={() => pickRandom(restaurants)}>MUESTRÁME OTRO</button>
                         <button className="btn btn-success btn-lg px-5 fw-bold" onClick={handleGuardar}>GUARDAR</button>
-                        <a 
+                        <a
                             href={`https://www.google.com/maps/search/?api=1&query=${randomRestaurant.lat},${randomRestaurant.lon}`}
-                            target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-lg px-4"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-primary btn-lg px-4"
                         >
                             VER EN GOOGLE MAPS
                         </a>
                     </div>
                     <div className="mx-auto" style={{ maxWidth: "320px" }}>
                         <label className="form-label fw-bold text-muted small">Cambiar distancia:</label>
-                        <select
-                            value={radius}
-                            onChange={(e) => dispatch({ type: "set_radius", payload: Number(e.target.value) })}
-                            className="form-select form-select-lg text-center"
-                        >
+                        <select value={radius} onChange={(e) => dispatch({ type: "set_radius", payload: Number(e.target.value) })} className="form-select form-select-lg text-center">
                             <option value={1000}>1 km</option>
                             <option value={3000}>3 km</option>
                             <option value={5000}>5 km</option>
@@ -189,5 +165,3 @@ export const Restaurantes = () => {
 };
 
 export default Restaurantes;
-
-//ola
