@@ -1,52 +1,54 @@
-import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import MyMap from "../components/MyMap.jsx";
+import "../index.css";
 
 export const Home = () => {
+    const { dispatch } = useGlobalReducer();
+    const navigate = useNavigate();
+    const [radius, setRadius] = useState(5000);
 
-	const { store, dispatch } = useGlobalReducer()
+    const handleSearch = () => {
+        dispatch({
+            type: "set_radius",
+            payload: radius
+        });
 
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL
+        navigate("/restaurantes");
+    };
 
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+    return (
+        <div className="home-container">
+            <h1 className="hambrientos-title">HAMBRIENTOS</h1>
 
-			const response = await fetch(backendUrl + "/api/hello")
-			const data = await response.json()
+            <div className="search-card shadow">
+                <div className="location-section">
+                    <MyMap />
 
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
+                    <div className="radius-section">
+                        <label>Distancia:</label>
+                        <select
+                            value={radius}
+                            onChange={(e) => setRadius(Number(e.target.value))}
+                            className="form-select"
+                        >
+                            <option value={1000}>1 km</option>
+                            <option value={3000}>3 km</option>
+                            <option value={5000}>5 km</option>
+                            <option value={10000}>10 km</option>
+                        </select>
+                    </div>
 
-			return data
+                    <small>Ubicación detectada por GPS</small>
+                </div>
 
-		} catch (error) {
-			if (error.message) throw new Error(
-				`Could not fetch the message from the backend.
-				Please check if the backend is running and the backend port is public.`
-			);
-		}
+                <button className="search-button" onClick={handleSearch}>
+                    EMPEZAR A BUSCAR
+                </button>
+            </div>
+        </div>
+    );
+};
 
-	}
-
-	useEffect(() => {
-		loadMessage()
-	}, [])
-
-	return (
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
-			</div>
-		</div>
-	);
-}; 
+export default Home;
