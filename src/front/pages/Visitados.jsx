@@ -6,11 +6,54 @@ export const Visitados = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
 
-    const handleFavorito = (item) => {
-        dispatch({
-            type: "agregar_favorito",
-            payload: item
-        });
+    const handleFavorito = async (item) => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+            const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/favorito", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    nombre: item.nombre,
+                    tipo: item.tipo
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                dispatch({ type: "agregar_favorito", payload: data });
+            } else {
+                alert("Error al guardar en favoritos.");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+        }
+    };
+    const eliminarVisitado = async (item) => {
+        console.log("Intentando eliminar el item:", item);
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+            const response = await fetch(`https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/visitado/${item.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (response.ok) {
+                dispatch({ type: "borrar_visitado", payload: item.nombre });
+            } else {
+                alert("Error al intentar borrarlo.");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+        }
     };
 
     return (
@@ -42,9 +85,9 @@ export const Visitados = () => {
                                             <span className="badge bg-success">Visitado ✅</span>
                                         </div>
                                         <p className="card-text text-muted">{item.tipo}</p>
-                                        
+
                                         <div className="d-flex justify-content-between align-items-center mt-3">
-                                            <button 
+                                            <button
                                                 className={`btn btn-sm ${esFavorito ? "btn-warning" : "btn-outline-warning"}`}
                                                 onClick={() => handleFavorito(item)}
                                                 disabled={esFavorito}
@@ -52,9 +95,9 @@ export const Visitados = () => {
                                                 {esFavorito ? "⭐ En favoritos" : "⭐ Guardar"}
                                             </button>
 
-                                            <button 
+                                            <button
                                                 className="btn btn-sm btn-link text-danger text-decoration-none"
-                                                onClick={() => dispatch({ type: "borrar_visitado", payload: item.nombre })}
+                                                onClick={() => eliminarVisitado(item)}
                                             >
                                                 Eliminar historial
                                             </button>
@@ -69,3 +112,5 @@ export const Visitados = () => {
         </div>
     );
 };
+
+export default Visitados;
