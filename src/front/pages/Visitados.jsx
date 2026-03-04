@@ -6,25 +6,54 @@ export const Visitados = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
 
-    useEffect(() => {
+    const handleFavorito = async (item) => {
         const token = localStorage.getItem("token");
+        if (!token) return;
 
-        fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/visitados", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                dispatch({ type: "set_visitados", payload: data });
+        try {
+            const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/favorito", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    nombre: item.nombre,
+                    tipo: item.tipo
+                })
             });
-    }, []);
 
-    const handleFavorito = (item) => {
-        dispatch({
-            type: "agregar_favorito",
-            payload: item
-        });
+            if (response.ok) {
+                const data = await response.json();
+                dispatch({ type: "agregar_favorito", payload: data });
+            } else {
+                alert("Error al guardar en favoritos.");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+        }
+    };
+    const eliminarVisitado = async (item) => {
+        console.log("Intentando eliminar el item:", item);
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+            const response = await fetch(`https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/visitado/${item.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (response.ok) {
+                dispatch({ type: "borrar_visitado", payload: item.nombre });
+            } else {
+                alert("Error al intentar borrarlo.");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+        }
     };
 
     return (
@@ -68,7 +97,7 @@ export const Visitados = () => {
 
                                             <button
                                                 className="btn btn-sm btn-link text-danger text-decoration-none"
-                                                onClick={() => dispatch({ type: "borrar_visitado", payload: item.nombre })}
+                                                onClick={() => eliminarVisitado(item)}
                                             >
                                                 Eliminar historial
                                             </button>
@@ -83,3 +112,5 @@ export const Visitados = () => {
         </div>
     );
 };
+
+export default Visitados;

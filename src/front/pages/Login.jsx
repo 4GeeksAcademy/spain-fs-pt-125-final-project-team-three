@@ -5,24 +5,29 @@ export const Login = () => {
 	const [password, setPassword] = useState("");
 
 	const login = async () => {
-		const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/login", {
-			method: "POST",
-			body: JSON.stringify({ email, password }),
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": "Bearer r"
-			}
-		});
-		const data = await response.json();
+    try {
+        const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/login", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-		if (response.ok) {
-			localStorage.setItem("token", data.token);
-			alert("login correcto");
-			window.location.reload();
-		} else {
-			alert("Login incorrecto");
-		}
-	};
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem("token", data.token);
+            alert("Login correcto");
+            window.location.reload(); 
+        } else {
+            alert("Login incorrecto: " + (data.msg || "Error desconocido"));
+        }
+    } catch (error) {
+        console.error("Error de conexión:", error);
+        alert("No se pudo conectar con el servidor. Revisa si el backend está corriendo y el puerto 3001 es PÚBLICO.");
+    }
+};
 	return (
 
 		<div className="home-container">
