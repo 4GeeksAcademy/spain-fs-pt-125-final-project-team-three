@@ -9,48 +9,34 @@ export const Navbar = () => {
     const eliminarVisitado = async (visitado) => {
         if (!token) return;
         try {
-            const response = await fetch(`https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/visitado/${visitado.id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/visitado/${visitado.id}`, {
                 method: "DELETE",
                 headers: { "Authorization": "Bearer " + token }
             });
-            if (response.ok) {
-                dispatch({ type: "borrar_visitado", payload: visitado.nombre });
-            }
-        } catch (error) {
-            console.error("Error de conexión:", error);
-        }
+            if (response.ok) dispatch({ type: "borrar_visitado", payload: visitado.nombre });
+        } catch (error) { console.error(error); }
     };
 
     const eliminarGuardado = async (guardado) => {
         if (!token) return;
         try {
-            const response = await fetch(`https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/guardado/${guardado.id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/guardado/${guardado.id}`, {
                 method: "DELETE",
                 headers: { "Authorization": "Bearer " + token }
             });
-            if (response.ok) {
-                dispatch({ type: "borrar_guardado", payload: guardado.nombre });
-            } else {
-                alert("Error al eliminar de guardados.");
-            }
-        } catch (error) {
-            console.error("Error de conexión:", error);
-        }
+            if (response.ok) dispatch({ type: "borrar_guardado", payload: guardado.nombre });
+        } catch (error) { console.error(error); }
     };
 
     const eliminarFavorito = async (favorito) => {
         if (!token) return;
         try {
-            const response = await fetch(`https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/favorito/${favorito.id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/favorito/${favorito.id}`, {
                 method: "DELETE",
                 headers: { "Authorization": "Bearer " + token }
             });
-            if (response.ok) {
-                dispatch({ type: "borrar_favorito", payload: favorito.nombre });
-            }
-        } catch (error) {
-            console.error("Error de conexión:", error);
-        }
+            if (response.ok) dispatch({ type: "borrar_favorito", payload: favorito.nombre });
+        } catch (error) { console.error(error); }
     };
 
     const toggleFavorito = async (restaurante, esFav) => {
@@ -60,24 +46,16 @@ export const Navbar = () => {
             if (favToDelete) eliminarFavorito(favToDelete);
         } else {
             try {
-                const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/favorito", {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/favorito`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    },
-                    body: JSON.stringify({
-                        nombre: restaurante.nombre,
-                        tipo: restaurante.tipo || "Restaurante"
-                    })
+                    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                    body: JSON.stringify({ nombre: restaurante.nombre, tipo: restaurante.tipo || "Restaurante" })
                 });
                 if (response.ok) {
                     const data = await response.json();
                     dispatch({ type: "agregar_favorito", payload: data });
                 }
-            } catch (error) {
-                console.error("Error de conexión:", error);
-            }
+            } catch (error) { console.error(error); }
         }
     };
 
@@ -101,9 +79,7 @@ export const Navbar = () => {
                                     store.misFavoritos.slice(0, 3).map((fav, i) => (
                                         <li key={i} className="d-flex justify-content-between align-items-center px-3 py-1">
                                             <span className="small text-truncate" style={{ maxWidth: "180px" }}>{fav.nombre}</span>
-                                            <button className="btn btn-sm text-danger p-0" onClick={(e) => { e.stopPropagation(); eliminarFavorito(fav); }}>
-                                                ✕
-                                            </button>
+                                            <button className="btn btn-sm text-danger p-0" onClick={(e) => { e.stopPropagation(); eliminarFavorito(fav); }}>✕</button>
                                         </li>
                                     ))
                                 )}
@@ -120,18 +96,10 @@ export const Navbar = () => {
                                             <li key={i} className="d-flex justify-content-between align-items-center px-3 py-1">
                                                 <span className="small text-truncate" style={{ maxWidth: "150px" }}>{guardado.nombre}</span>
                                                 <div className="d-flex gap-2">
-                                                    <button
-                                                        className={`btn btn-sm p-0 ${esFav ? "text-warning" : "text-secondary"}`}
-                                                        onClick={(e) => { e.stopPropagation(); toggleFavorito(guardado, esFav); }}
-                                                    >
+                                                    <button className={`btn btn-sm p-0 ${esFav ? "text-warning" : "text-secondary"}`} onClick={(e) => { e.stopPropagation(); toggleFavorito(guardado, esFav); }}>
                                                         {esFav ? "★" : "☆"}
                                                     </button>
-                                                    <button
-                                                        className="btn btn-sm text-danger p-0"
-                                                        onClick={(e) => { e.stopPropagation(); eliminarGuardado(guardado); }}
-                                                    >
-                                                        ✕
-                                                    </button>
+                                                    <button className="btn btn-sm text-danger p-0" onClick={(e) => { e.stopPropagation(); eliminarGuardado(guardado); }}>✕</button>
                                                 </div>
                                             </li>
                                         );
@@ -151,13 +119,7 @@ export const Navbar = () => {
                         </div>
                     )}
                     {token && (
-                        <button
-                            className="btn btn-danger"
-                            onClick={() => {
-                                localStorage.removeItem("token");
-                                window.location.reload();
-                            }}
-                        >
+                        <button className="btn btn-danger" onClick={() => { localStorage.removeItem("token"); window.location.reload(); }}>
                             Logout
                         </button>
                     )}

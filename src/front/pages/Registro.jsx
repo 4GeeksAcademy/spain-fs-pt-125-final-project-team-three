@@ -5,24 +5,29 @@ export const Register = () => {
     const [password, setPassword] = useState("");
 
     const register = async () => {
-            const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/register", {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
                 method: "POST",
                 body: JSON.stringify({ 
-                email: email, 
-                password: password 
-            }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+                    email: email, 
+                    password: password 
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
 
-        if (response.ok) {
-            const res = await response.json();
-            console.log("Usuario registrado con éxito:", res);
-            alert("¡Registro completado! Ahora puedes iniciar sesión.");
-        } else {
-            console.error("Error en el registro");
-            alert("Hubo un error al registrar el usuario.");
+            if (response.ok) {
+                const res = await response.json();
+                console.log("Usuario registrado con éxito:", res);
+                alert("¡Registro completado! Ahora puedes iniciar sesión.");
+            } else {
+                console.error("Error en el registro");
+                alert("Hubo un error al registrar el usuario.");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            alert("Hubo un problema de conexión al intentar registrar.");
         }
     };
 

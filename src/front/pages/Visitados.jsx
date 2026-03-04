@@ -11,7 +11,7 @@ export const Visitados = () => {
         if (!token) return;
 
         try {
-            const response = await fetch("https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/favorito", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/favorito`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -33,13 +33,13 @@ export const Visitados = () => {
             console.error("Error de conexión:", error);
         }
     };
+
     const eliminarVisitado = async (item) => {
-        console.log("Intentando eliminar el item:", item);
         const token = localStorage.getItem("token");
         if (!token) return;
 
         try {
-            const response = await fetch(`https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/visitado/${item.id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/visitado/${item.id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": "Bearer " + token

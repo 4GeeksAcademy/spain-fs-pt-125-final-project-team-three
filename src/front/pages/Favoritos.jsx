@@ -9,40 +9,28 @@ export const Favoritos = () => {
 
     const eliminarFavorito = async (res) => {
         if (!token) return;
-
         try {
-            const response = await fetch(`https://scaling-dollop-974v94jqq446fxxw4-3001.app.github.dev/api/favorito/${res.id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/favorito/${res.id}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
+                headers: { "Authorization": "Bearer " + token }
             });
-
             if (response.ok) {
                 dispatch({ type: "borrar_favorito", payload: res.nombre });
-            } else {
-                alert("No se pudo eliminar de la base de datos.");
             }
-        } catch (error) {
-            console.error("Error de conexión:", error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     return (
         <div className="container mt-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h2>Mis Favoritos ⭐</h2>
-                <button className="btn btn-outline-secondary" onClick={() => navigate("/perfil")}>
-                    Volver al Perfil
-                </button>
+                <button className="btn btn-outline-secondary" onClick={() => navigate("/perfil")}>Volver al Perfil</button>
             </div>
 
             {store.misFavoritos.length === 0 ? (
                 <div className="text-center alert alert-light p-5 shadow-sm">
                     <p className="lead">Creo que deberías salir a comer.</p>
-                    <button className="btn btn-danger" onClick={() => navigate("/restaurantes")}>
-                        Explorar locales
-                    </button>
+                    <button className="btn btn-danger" onClick={() => navigate("/restaurantes")}>Explorar locales</button>
                 </div>
             ) : (
                 <div className="row">
@@ -54,10 +42,7 @@ export const Favoritos = () => {
                                         <h5 className="card-title fw-bold">{res.nombre}</h5>
                                         <p className="card-text text-muted small">{res.tipo}</p>
                                     </div>
-                                    <button
-                                        className="btn btn-outline-danger btn-sm w-100 mt-3"
-                                        onClick={() => eliminarFavorito(res)}
-                                    >
+                                    <button className="btn btn-outline-danger btn-sm w-100 mt-3" onClick={() => eliminarFavorito(res)}>
                                         Eliminar de favoritos
                                     </button>
                                 </div>
